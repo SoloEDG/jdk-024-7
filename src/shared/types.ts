@@ -31,6 +31,38 @@ export interface JournalEntry {
   best: number;
   first: number;
 }
+export type FacilityKind = "plant" | "airstone" | "shelter";
+export interface TankFish {
+  catchId: string;
+  pinned: boolean;
+}
+export interface Facility {
+  id: string;
+  kind: FacilityKind;
+  pinned: boolean;
+}
+export interface FishCondition {
+  stress: number;
+  satiety: number;
+}
+export interface TankEvent {
+  t: number;
+  kind: string;
+  text: string;
+}
+export interface Tank {
+  fish: TankFish[];
+  facilities: Facility[];
+  oxygen: number;
+  hypoxiaMin: number;
+  fasting: boolean;
+  condition: Record<string, FishCondition>;
+  lastTick: number;
+  healthStreakH: number;
+  bestStreakH: number;
+  guaranteeUntil: number | null;
+  events: TankEvent[];
+}
 export interface GameDocument {
   version: 1;
   spot: SpotId;
@@ -43,6 +75,7 @@ export interface GameDocument {
   journal: Partial<Record<FishId, JournalEntry>>;
   stats: { casts: number; catches: number; escapes: number; released: number };
   claimed: string[];
+  tank: Tank;
 }
 export interface Session {
   id: string;
@@ -69,4 +102,5 @@ export interface Workspace {
   doc: GameDocument;
   session: Session;
   notice: string;
+  tankReport: TankEvent[] | null;
 }

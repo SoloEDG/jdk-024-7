@@ -13,6 +13,16 @@ import {
 import { prepareCast, tickSession, strike } from "../features/fishing";
 import { landCatch, releaseCatch } from "../features/collection";
 import { claimReward } from "../features/challenges";
+import {
+  addFacility,
+  addFishToTank,
+  advanceTank,
+  applyPlan,
+  removeFacility,
+  removeFishFromTank,
+  toggleFacilityPin,
+  toggleFishPin,
+} from "../features/aquarium";
 export function gameReducer(state: Workspace, c: Command): Workspace {
   const { doc, session: s } = state;
   const busy = isBusy(s);
@@ -72,7 +82,6 @@ export function gameReducer(state: Workspace, c: Command): Workspace {
         : state;
     case "tick": {
       const next = tickSession(s, doc, Math.min(0.1, Math.max(0, c.dt)));
-      if (next === s) return state;
       let updated = doc;
       if (next.phase === "landed" && s.phase !== "landed")
         updated = landCatch(doc, next, Date.now());
@@ -81,15 +90,90 @@ export function gameReducer(state: Workspace, c: Command): Workspace {
           ...doc,
           stats: { ...doc.stats, escapes: doc.stats.escapes + 1 },
         };
-      return { ...state, doc: updated, session: next };
+      const advanced = advanceTank(updated, Date.now());
+      if (next === s && advanced === updated) return state;
+      return { ...state, doc: advanced, session: next };
     }
     case "next":
       return s.phase === "landed" || s.phase === "escaped"
         ? { ...state, session: idleSession() }
         : state;
-    case "release":
-      return { ...state, doc: releaseCatch(doc, c.id) };
+    case "release": {
+      const released = releaseCatch(doc, c.id);
+      if (released === doc) return state;
+      const tank = released.tank;
+      const inTank = tank.fish.some((f) => f.catchId === c.id);
+      const condition = { ...tank.condition };
+      delete condition[c.id];
+      return {
+        ...state,
+        doc: inTank
+          ? {
+              ...released,
+              tank: {
+                ...tank,
+                fish: tank.fish.filter((f) => f.catchId !== c.id),
+                condition,
+                guaranteeUntil: null,
+              },
+            }
+          : released,
+      };
+    }
     case "claim":
       return { ...state, doc: claimReward(doc, c.id) };
+    case "tank-add-fish": {
+      const advanced = advanceTank(doc, Date.now());
+      const next = addFishToTank(advanced, c.id);
+      return next === advanced
+        ? state
+        : { ...state, doc: next, notice: "已安置到水箱。" };
+    }
+    case "tank-remove-fish": {
+      const advanced = advanceTank(doc, Date.now());
+      const next = removeFishFromTank(advanced, c.id);
+      return next === advanced
+        ? state
+        : { ...state, doc: next, notice: "已移回背包。" };
+    }
+    case "tank-add-facility": {
+      const advanced = advanceTank(doc, Date.now());
+      const next = addFacility(advanced, c.kind, Date.now());
+      return next === advanced
+        ? state
+        : { ...state, doc: next, notice: "设施已布置好。" };
+    }
+    case "tank-remove-facility": {
+      const advanced = advanceTank(doc, Date.now());
+      const next = removeFacility(advanced, c.id);
+      return next === advanced
+        ? state
+        : { ...state, doc: next, notice: "设施已移除。" };
+    }
+    case "tank-pin-fish": {
+      const next = toggleFishPin(doc, c.id);
+      return next === doc ? state : { ...state, doc: next };
+    }
+    case "tank-pin-facility": {
+      const next = toggleFacilityPin(doc, c.id);
+      return next === doc ? state : { ...state, doc: next };
+    }
+    case "tank-apply-plan": {
+      const now = Date.now();
+      const { doc: next, guaranteed } = applyPlan(
+        advanceTank(doc, now),
+        c.plan,
+        now,
+      );
+      return {
+        ...state,
+        doc: next,
+        notice: guaranteed
+          ? "修复方案已生效，未来 6 小时的整箱健康获得保障。"
+          : "水箱状态已变化，方案未能通过复核，请重新计算。",
+      };
+    }
+    case "tank-dismiss-report":
+      return { ...state, tankReport: null };
   }
 }

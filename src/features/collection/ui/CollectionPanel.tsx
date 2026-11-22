@@ -15,6 +15,8 @@ export function CollectionPanel({
   const [tab, setTab] = useState<"atlas" | "bag">("atlas");
   const [detail, setDetail] = useState<string | null>(null);
   const fish = detail ? species(detail) : null;
+  const inTank = new Set(doc.tank.fish.map((f) => f.catchId));
+  const bagFish = doc.bag.filter((c) => !inTank.has(c.id));
   return (
     <section className="collection-panel">
       <div className="section-title">
@@ -37,7 +39,7 @@ export function CollectionPanel({
           onClick={() => setTab("bag")}
         >
           <Backpack size={13} />
-          我的背包 <b>{doc.bag.length}</b>
+          我的背包 <b>{bagFish.length}</b>
         </button>
       </div>
       {tab === "atlas" ? (
@@ -75,16 +77,17 @@ export function CollectionPanel({
       ) : (
         <div className="bag-list">
           <small>
-            共 {doc.bag.length} 尾 · {bagWeight(doc.bag).toFixed(2)} kg
+            共 {bagFish.length} 尾 · {bagWeight(bagFish).toFixed(2)} kg
+            {inTank.size > 0 && ` · ${inTank.size} 尾在水箱`}
           </small>
-          {doc.bag.length === 0 && (
+          {bagFish.length === 0 && (
             <div className="empty-bag">
               <Backpack size={26} />
               <p>背包里还没有收获</p>
               <small>第一尾鱼，正等着与你相遇。</small>
             </div>
           )}
-          {doc.bag.map((c) => (
+          {bagFish.map((c) => (
             <div className="bag-item" key={c.id}>
               <FishIllustration fish={species(c.fish)} />
               <span>

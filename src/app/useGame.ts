@@ -6,8 +6,10 @@ export function useGame() {
   const loaded = useRef<ReturnType<typeof loadGame> | null>(null);
   if (!loaded.current) loaded.current = loadGame();
   const [state, send] = useReducer(gameReducer, loaded.current, (initial) => ({
-    ...initial,
+    doc: initial.doc,
     session: idleSession(),
+    notice: initial.notice,
+    tankReport: initial.tankReport,
   }));
   const recovery = useRef(loaded.current.recovery === true);
   const [saved, setSaved] = useState(!recovery.current);

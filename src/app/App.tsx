@@ -9,6 +9,7 @@ import {
   ArrowUpRight,
   X,
   Compass,
+  Waves,
 } from "lucide-react";
 import { isBusy } from "../shared/initial";
 import { WaterPanel, WaterConditions, water } from "../features/waters";
@@ -16,6 +17,7 @@ import { BaitPanel, RigPanel } from "../features/tackle";
 import { LakeScene, FishingPanel } from "../features/fishing";
 import { CollectionPanel } from "../features/collection";
 import { ChallengePanel, TripStats } from "../features/challenges";
+import { AquariumPanel } from "../features/aquarium";
 import { useGame } from "./useGame";
 export function App() {
   const { state, send, saved } = useGame();
@@ -49,6 +51,10 @@ export function App() {
           <a href="#challenges">
             <Flag size={16} />
             钓手挑战
+          </a>
+          <a href="#aquarium">
+            <Waves size={16} />
+            互动水箱
           </a>
         </nav>
         <div className="header-end">
@@ -140,6 +146,9 @@ export function App() {
             <TripStats doc={doc} />
           </aside>
         </div>
+        <section className="aquarium-section" id="aquarium">
+          <AquariumPanel doc={doc} send={send} report={state.tankReport} />
+        </section>
         <footer className="page-footer">
           <span>
             STILLWATER FIELD NOTES <b>·</b> EST. 2026

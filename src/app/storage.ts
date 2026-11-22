@@ -1,6 +1,7 @@
 import { newDocument } from "../shared/initial";
 import { fishCatalog } from "../shared/catalog";
-import type { GameDocument } from "../shared/types";
+import type { GameDocument, TankEvent } from "../shared/types";
+import { advanceTank, normalizeTank } from "../features/aquarium";
 const key = "stillwater-jdk024-v1";
 function valid(value: unknown): value is GameDocument {
   if (!value || typeof value !== "object") return false;
@@ -55,23 +56,46 @@ function valid(value: unknown): value is GameDocument {
     )
   );
 }
-export function loadGame(): { doc: GameDocument; notice: string; recovery?: true } {
+export interface LoadedGame {
+  doc: GameDocument;
+  notice: string;
+  recovery?: true;
+  tankReport: TankEvent[] | null;
+}
+function withTank(doc: GameDocument, now: number): LoadedGame {
+  const normalized: GameDocument = {
+    ...doc,
+    tank: normalizeTank(doc.tank, doc.bag, now),
+  };
+  // 离线补算（最多六小时），期间阈值变化按顺序收集，返回时展示
+  const report: TankEvent[] = [];
+  const advanced = advanceTank(normalized, now, report);
+  return {
+    doc: advanced,
+    notice: "",
+    tankReport: report.length > 0 ? report : null,
+  };
+}
+export function loadGame(): LoadedGame {
+  const now = Date.now();
   try {
     const raw = localStorage.getItem(key);
-    if (!raw) return { doc: newDocument(), notice: "" };
+    if (!raw) return { doc: newDocument(), notice: "", tankReport: null };
     const parsed: unknown = JSON.parse(raw);
     return valid(parsed)
-      ? { doc: parsed, notice: "" }
+      ? withTank(parsed, now)
       : {
           doc: newDocument(),
           notice: "本地手记格式或版本无法读取，已保留原手记并开启临时游玩。",
           recovery: true,
+          tankReport: null,
         };
   } catch {
     return {
       doc: newDocument(),
       notice: "无法读取本地手记，已暂停自动保存，本次可以临时游玩。",
       recovery: true,
+      tankReport: null,
     };
   }
 }

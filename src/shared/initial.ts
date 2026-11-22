@@ -1,4 +1,19 @@
-import type { GameDocument, Session } from "./types";
+import type { GameDocument, Session, Tank } from "./types";
+export function emptyTank(now: number): Tank {
+  return {
+    fish: [],
+    facilities: [],
+    oxygen: 6.8,
+    hypoxiaMin: 0,
+    fasting: false,
+    condition: {},
+    lastTick: now,
+    healthStreakH: 0,
+    bestStreakH: 0,
+    guaranteeUntil: null,
+    events: [],
+  };
+}
 export function newDocument(): GameDocument {
   return {
     version: 1,
@@ -12,6 +27,7 @@ export function newDocument(): GameDocument {
     journal: {},
     stats: { casts: 0, catches: 0, escapes: 0, released: 0 },
     claimed: [],
+    tank: emptyTank(Date.now()),
   };
 }
 export function idleSession(): Session {

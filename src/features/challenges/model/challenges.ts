@@ -54,4 +54,13 @@ export const challenges: Challenge[] = [
     reward: "护水徽章",
     measure: (d) => d.stats.released,
   },
+  {
+    id: "warden",
+    unlockAt: 1,
+    name: "一池安稳",
+    description: "水箱连续保持健康 6 小时",
+    target: 6,
+    reward: "护箱徽章",
+    measure: (d) => Math.floor(d.tank.healthStreakH),
+  },
 ];

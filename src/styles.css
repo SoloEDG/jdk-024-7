@@ -1565,3 +1565,398 @@ main {
     animation: notice-out 1ms 5s forwards !important;
   }
 }
+
+/* —— 互动水箱 —— */
+.aquarium-section {
+  margin-top: 26px;
+  background: #f8faf9;
+  border: 1px solid #dbe5e5;
+  border-radius: 10px;
+  padding: 18px 22px 20px;
+}
+.aquarium-panel .section-title {
+  margin-bottom: 14px;
+}
+.aquarium-panel .section-title .text-btn {
+  margin-left: 0;
+}
+.tank-health {
+  margin-left: auto;
+  font-size: 9px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.tank-health.ok {
+  background: #e2efe4;
+  color: #4a7a5a;
+}
+.tank-health.bad {
+  background: #f6e3da;
+  color: #b05c3f;
+}
+.tank-status-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.tank-stat {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.tank-stat small {
+  font-size: 9px;
+  color: var(--muted);
+}
+.tank-stat strong {
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.tank-stat.o2-good {
+  border-color: #b8d4bd;
+  background: #f2f8f1;
+}
+.tank-stat.o2-warn {
+  border-color: #e3c98f;
+  background: #fbf6e9;
+}
+.tank-stat.o2-bad {
+  border-color: #dfa08c;
+  background: #faeee9;
+}
+.tank-scene {
+  position: relative;
+  height: 130px;
+  border-radius: 10px;
+  border: 1px solid #c8dcd8;
+  background: linear-gradient(180deg, #cfe4e2 0%, #9dbfb9 55%, #7d9f97 100%);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.tank-swimmer {
+  position: absolute;
+  top: 18%;
+  width: 84px;
+  animation: tank-swim 9s ease-in-out infinite alternate;
+  opacity: 0.92;
+}
+.tank-swimmer .fish-art {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+@keyframes tank-swim {
+  0% {
+    transform: translate(0, 0) scaleX(1);
+  }
+  45% {
+    transform: translate(26px, 14px) scaleX(1);
+  }
+  55% {
+    transform: translate(30px, 16px) scaleX(-1);
+  }
+  100% {
+    transform: translate(-6px, 26px) scaleX(-1);
+  }
+}
+.tank-floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 6px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  align-items: flex-end;
+}
+.tank-deco {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.35);
+  color: #3c625c;
+}
+.deco-airstone {
+  animation: tank-bubble 2.4s ease-in-out infinite;
+}
+@keyframes tank-bubble {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+.tank-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 18px;
+}
+.tank-col h3 {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #4c6a68;
+  margin: 14px 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tank-col h3:first-child {
+  margin-top: 0;
+}
+.tank-col h3 b {
+  font-size: 10px;
+  color: #fff;
+  background: #7d9a94;
+  border-radius: 10px;
+  padding: 1px 7px;
+}
+.tank-empty {
+  font-size: 10px;
+  color: var(--muted);
+  background: #f2f6f5;
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+.tank-fish,
+.tank-facility {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+}
+.tank-fish .fish-art {
+  width: 58px;
+  flex-shrink: 0;
+}
+.tank-fish.bag {
+  background: #f6f9f8;
+}
+.tank-fish-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.tank-fish-info strong {
+  font-size: 11px;
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+.tank-fish-info strong em {
+  font-style: normal;
+  font-size: 9px;
+  color: var(--muted);
+}
+.tank-fish-info small {
+  font-size: 9px;
+  color: var(--muted);
+}
+.tank-bars {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 8px;
+  align-items: center;
+  margin-top: 3px;
+}
+.tank-bars label {
+  font-size: 8px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.tank-fish-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.tank-fish-actions .text-btn {
+  font-size: 9px;
+  padding: 4px 8px;
+}
+.facility-add-row {
+  display: flex;
+  gap: 8px;
+  margin: 4px 0 6px;
+}
+.facility-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  padding: 6px 10px;
+  border-radius: 7px;
+  border: 1px dashed #a9c2bb;
+  background: #f2f7f5;
+  color: #41665f;
+}
+.facility-add:hover:not(:disabled) {
+  background: #e4efeb;
+}
+.facility-add:disabled {
+  opacity: 0.5;
+}
+.tank-log {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.tank-log li,
+.repair-events li {
+  font-size: 9px;
+  color: #54706d;
+  background: #f2f6f5;
+  border-radius: 6px;
+  padding: 5px 9px;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.tank-log li time,
+.repair-events li time {
+  font-variant-numeric: tabular-nums;
+  color: #8ba09d;
+  flex-shrink: 0;
+}
+.tank-log .log-o2-low,
+.tank-log .log-o2-critical,
+.tank-log .log-fasting,
+.tank-log .log-stress {
+  background: #f9ece5;
+  color: #a55a3e;
+}
+.tank-note {
+  margin-top: 10px;
+  font-size: 9px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+/* —— 规则 / 修复 / 报告弹窗 —— */
+.guide.tank-rules,
+.guide.tank-repair,
+.guide.tank-report {
+  max-width: 560px;
+  max-height: 82vh;
+  overflow-y: auto;
+}
+.guide.tank-rules li b {
+  color: #3c625c;
+}
+.repair-computing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--muted);
+  padding: 18px 0;
+}
+.spin {
+  animation: repair-spin 1s linear infinite;
+}
+@keyframes repair-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.repair-danger {
+  background: #f9ece5;
+  border: 1px solid #e8c4b2;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+.repair-danger p {
+  font-size: 10px;
+  color: #9c5138;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+.repair-events {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.repair-plan {
+  background: #f2f7f5;
+  border: 1px solid #cfdfda;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+.repair-plan h3 {
+  font-size: 10px;
+  margin: 0 0 6px;
+  color: #41665f;
+}
+.repair-plan ul {
+  margin: 0;
+  padding-left: 16px;
+  font-size: 10px;
+  color: #3c5a55;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.repair-safe {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: #46714f;
+  background: #eef5ec;
+  border-radius: 7px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+}
+.repair-fail {
+  font-size: 10px;
+  color: #9c5138;
+  background: #f9ece5;
+  border-radius: 7px;
+  padding: 10px 12px;
+  line-height: 1.7;
+}
+.repair-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+.tank-report .repair-events {
+  margin: 10px 0 14px;
+}
+@media (max-width: 900px) {
+  .tank-status-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .tank-columns {
+    grid-template-columns: 1fr;
+  }
+}
